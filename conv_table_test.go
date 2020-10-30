@@ -1,4 +1,4 @@
-package sqltableconv
+package oberth
 
 import (
 	"fmt"

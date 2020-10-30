@@ -1,4 +1,4 @@
-module github.com/huangzhiran/sqltableconv
+module github.com/matpool/oberth
 
 go 1.15
 

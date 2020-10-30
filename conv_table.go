@@ -1,4 +1,4 @@
-package sqltableconv
+package oberth
 
 import (
 	"github.com/matpool/vitess-sqlparser/go/vt/sqlparser"
