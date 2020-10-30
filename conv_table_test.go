@@ -1,7 +1,6 @@
 package oberth
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -15,7 +14,6 @@ func TestConvTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(sc)
 	if sc != SQLExpect {
 		t.Error("conv table failed")
 	}
