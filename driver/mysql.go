@@ -60,24 +60,23 @@ func (mc *mysqlConn) ExecContext(ctx context.Context, query string, args []drive
 // see https://github.com/go-sql-driver/mysql/blob/v1.4.1/driver.go#L59
 // add URL query param `conv_table_name`
 func (d *MySQLDriver) Open(dataSourceName string) (driver.Conn, error) {
-	vs, err := url.ParseQuery(dataSourceName)
+	u, err := url.Parse(dataSourceName)
+	if err != nil {
+		return nil, err
+	}
+	vs, err := url.ParseQuery(u.RawQuery)
 	if err != nil {
 		return nil, err
 	}
 	var conv oberth.ConvFunc
 	if s := vs.Get(ConvTableRename); s != "" {
 		conv = (&caesarSalt{s}).conv
-
-		u, err := url.Parse(dataSourceName)
-		if err != nil {
-			return nil, err
-		}
-		vs.Del(ConvTableRename)
-		u.RawQuery = vs.Encode()
-		dataSourceName = u.String()
 	}
 
-	db, err := d.MySQLDriver.Open(dataSourceName)
+	vs.Del(ConvTableRename)
+	u.RawQuery = vs.Encode()
+
+	db, err := d.MySQLDriver.Open(u.String())
 	if err != nil {
 		return nil, err
 	}
