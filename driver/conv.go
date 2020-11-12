@@ -16,10 +16,17 @@ limitations under the License.
 
 package driver
 
+var reservedWord = map[string]bool{
+	"dual": true, // https://cloud.tencent.com/developer/article/1374246
+}
+
 type caesarSalt struct {
 	salt string
 }
 
 func (c *caesarSalt) conv(s string) string {
+	if _, ok := reservedWord[s]; ok {
+		return s
+	}
 	return caesarEn(c.salt + s)
 }
