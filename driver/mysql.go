@@ -65,8 +65,16 @@ func (d *MySQLDriver) Open(dataSourceName string) (driver.Conn, error) {
 		return nil, err
 	}
 	var conv oberth.ConvFunc
-	if p, ok := vs[ConvTableRename]; ok && len(p) > 0 {
-		conv = (&caesarSalt{p[0]}).conv
+	if s := vs.Get(ConvTableRename); s != "" {
+		conv = (&caesarSalt{s}).conv
+
+		u, err := url.Parse(dataSourceName)
+		if err != nil {
+			return nil, err
+		}
+		vs.Del(ConvTableRename)
+		u.RawQuery = vs.Encode()
+		dataSourceName = u.String()
 	}
 
 	db, err := d.MySQLDriver.Open(dataSourceName)
