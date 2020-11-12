@@ -48,12 +48,28 @@ func (mc *mysqlConn) QueryContext(ctx context.Context, query string, args []driv
 	return mc.Conn.(driver.QueryerContext).QueryContext(ctx, query, args)
 }
 
+func (mc *mysqlConn) Query(query string, args []driver.Value) (driver.Rows, error) {
+	query, err := oberth.ConvTable(query, mc.tableName)
+	if err != nil {
+		return nil, err
+	}
+	return mc.Conn.(driver.Queryer).Query(query, args)
+}
+
 func (mc *mysqlConn) ExecContext(ctx context.Context, query string, args []driver.NamedValue) (driver.Result, error) {
 	query, err := oberth.ConvTable(query, mc.tableName)
 	if err != nil {
 		return nil, err
 	}
 	return mc.Conn.(driver.ExecerContext).ExecContext(ctx, query, args)
+}
+
+func (mc *mysqlConn) Exec(query string, args []driver.Value) (driver.Result, error) {
+	query, err := oberth.ConvTable(query, mc.tableName)
+	if err != nil {
+		return nil, err
+	}
+	return mc.Conn.(driver.Execer).Exec(query, args)
 }
 
 // Open new Connection
